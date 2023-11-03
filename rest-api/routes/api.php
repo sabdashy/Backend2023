@@ -43,3 +43,6 @@ Route::put('/students/{id}', [StudentController::class, 'update']);
 
 // Route untuk mengupdate semua data student
 Route::delete('/students/{id}', [StudentController::class, 'destroy']);
+
+// Route untuk melihat semua data student
+Route::get('/students/{id}', [StudentController::class, 'show']);

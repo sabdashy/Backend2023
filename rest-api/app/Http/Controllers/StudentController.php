@@ -9,8 +9,15 @@ class StudentController extends Controller
 {
     public function index()
     {
-        // menggunakan model student untuk select data
         $students = Student::all();
+
+        if ($students->isEmpty()) {
+            $data = [
+                'message' => 'Resource is empty',
+                'data' => $students
+            ];
+            return response()->json($data, 204);
+        }
 
         $data = [
             'message' => 'Get all students',
@@ -23,6 +30,13 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
+        // validasi data request
+        $request->validate([
+            "nama" => "required",
+            "nim" => "required",
+            "email" => "required|email",
+            "jurusan" => "required"
+        ]);
         $input = [
             'nama' => $request->nama,
             'nim' => $request->nim,
@@ -47,32 +61,82 @@ class StudentController extends Controller
         // mencari data student sesuai id yang di tentukan
         $students = Student::find($id);
 
-        // menampilkan seluruh data student dengan perubahan terbarunya
-        $students->update($request->all());
+        if ($students) {
+            $input = [
+                'nama' => $request->nama ?? $students->nama,
+                'nim' => $request->nim ?? $students->nim,
+                'email' => $request->email ?? $students->email,
+                'jurusan' => $request->jurusan ?? $students->jurusan,
+            ];
+            // menampilkan seluruh data student dengan perubahan terbarunya
+            $students->update($input);
 
-        $data = [
-            'message' => 'Students is update succesfully',
-            'data' => $students
-        ];
+            $data = [
+                'message' => 'Students is update succesfully',
+                'data' => $students
+            ];
 
-        // mengirim data (json) dan kode 200
-        return response()->json($data, 200);
+            // mengirim data (json) dan kode 200
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'Students not found',
+                'data' => $students
+            ];
+
+            // mengirim data (json) dan kode 200
+            return response()->json($data, 404);
+        }
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
         // mencari data student sesuai id yang di tentukan
-        $students = Student::destroy($id);
+        $students = Student::find($id);
 
-        // menampilkan seluruh data student dengan perubahan terbarunya
-        // $students->update($request->all());
+        if ($students) {
 
-        $data = [
-            'message' => 'Students is delete succesfully',
-            'data' => $students
-        ];
+            $students->delete();
 
-        // mengirim data (json) dan kode 200
-        return response()->json($data, 200);
+            $data = [
+                'message' => 'Students is delete succesfully',
+                'data' => $students
+            ];
+
+            // mengirim data (json) dan kode 200
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'Students not found',
+                'data' => $students
+            ];
+
+            // mengirim data (json) dan kode 200
+            return response()->json($data, 404);
+        }
+    }
+
+    public function show($id)
+    {
+        // cari id student yang ingin didapatkan
+        $students = Student::find($id);
+
+        if ($students) {
+            $data = [
+                'message' => 'Students not found',
+                'data' => $students
+            ];
+
+            // mengirim data (json) dan kode 200
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'message' => 'Students not found',
+                'data' => $students
+            ];
+
+            // mengirim data (json) dan kode 200
+            return response()->json($data, 404);
+        }
     }
 }
