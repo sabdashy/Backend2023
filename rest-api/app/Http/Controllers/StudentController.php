@@ -16,7 +16,7 @@ class StudentController extends Controller
                 'message' => 'Resource is empty',
                 'data' => $students
             ];
-            return response()->json($data, 204);
+            return response()->json($data, 200);
         }
 
         $data = [
@@ -25,27 +25,27 @@ class StudentController extends Controller
         ];
 
         // mengirim data (json) dan kode 200
-        return response()->json($data, 200);
+        return response()->json($data, 401);
     }
 
     public function store(Request $request)
     {
         // validasi data request
-        $request->validate([
+        $validatedData = $request->validate([
             "nama" => "required",
-            "nim" => "required",
+            "nim" => "required|numeric",
             "email" => "required|email",
             "jurusan" => "required"
         ]);
-        $input = [
-            'nama' => $request->nama,
-            'nim' => $request->nim,
-            'email' => $request->email,
-            'jurusan' => $request->jurusan,
-        ];
+        // $input = [
+        //     'nama' => $request->nama,
+        //     'nim' => $request->nim,
+        //     'email' => $request->email,
+        //     'jurusan' => $request->jurusan,
+        // ];
 
         // menggunakan model student untuk membuat data baru
-        $students = Student::create($input);
+        $students = Student::create($validatedData);
 
         $data = [
             'message' => 'Students is created succesfully',
@@ -53,7 +53,7 @@ class StudentController extends Controller
         ];
 
         // mengirim data (json) dan kode 200
-        return response()->json($data, 200);
+        return response()->json($data, 201);
     }
 
     public function update(Request $request, $id)

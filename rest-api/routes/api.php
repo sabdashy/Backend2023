@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 // Route untuk menampilkan semua hewan
 Route::get('/animals', [AnimalController::class, 'index']);
@@ -32,17 +33,25 @@ Route::put('/animals/{id}', [AnimalController::class, 'update']);
 // Route untuk menghapus hewan
 Route::delete('/animals/{id}', [AnimalController::class, 'delete']);
 
-// Route untuk menampilkan semua data student
-Route::get('/students', [StudentController::class, 'index']);
 
-// Route untuk menambahkan semua data student
-Route::post('/students', [StudentController::class, 'store']);
+Route::middleware('auth:sanctum')->group(function () {
+    // Route untuk menampilkan semua data student
+    Route::get('/students', [StudentController::class, 'index']);
 
-// Route untuk mengupdate semua data student
-Route::put('/students/{id}', [StudentController::class, 'update']);
+    // Route untuk menambahkan semua data student
+    Route::post('/students', [StudentController::class, 'store']);
 
-// Route untuk mengupdate semua data student
-Route::delete('/students/{id}', [StudentController::class, 'destroy']);
+    // Route untuk mengupdate semua data student
+    Route::put('/students/{id}', [StudentController::class, 'update']);
 
-// Route untuk melihat semua data student
-Route::get('/students/{id}', [StudentController::class, 'show']);
+    // Route untuk mengupdate semua data student
+    Route::delete('/students/{id}', [StudentController::class, 'destroy']);
+
+    // Route untuk melihat semua data student
+    Route::get('/students/{id}', [StudentController::class, 'show']);
+});
+
+
+// otentikasi register dan login
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
