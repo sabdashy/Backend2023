@@ -24,7 +24,7 @@ const db = mysql.createConnection({
 //     host: "localhost",
 //     user: "root",
 //     password: "",
-//     database: "laravel_rest_api",
+//     database: "express_rest_api",
 // });
 
 db.connect((err) => {
